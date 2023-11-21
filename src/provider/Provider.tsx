@@ -11,11 +11,12 @@ import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 export type ToastProviderProps = {
-  amountOfShownToasts: number;
-  position?: 'top' | 'bottom';
-  initialIndentation?: number;
-  gap?: number;
+  amountOfShownToasts?: number;
+  containerStyle?: StyleProp<ViewStyle>;
+  inverted?: boolean;
 };
+
+const DEFAULT_AMOUNT_OF_TOASTS = 3;
 
 export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   props
@@ -34,7 +35,11 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const show = useCallback(
     (newToast: CreateToastProps) => {
       setQueue((current) => {
-        if (current.length > props.amountOfShownToasts - 1) hide(current.at(0));
+        if (
+          current.length >
+          (props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS) - 1
+        )
+          hide(current.at(0));
 
         return [...current, { ...newToast, id: generateUniqueId() }];
       });
@@ -44,17 +49,16 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
 
   const clearQueue = () => setQueue([]);
 
-  useEffect(
-    () => setShownToasts(queue.slice(0, props.amountOfShownToasts).reverse()),
-    [props.amountOfShownToasts, queue]
-  );
+  useEffect(() => {
+    let q = queue.slice(0, props.amountOfShownToasts);
+    if (!props.inverted) q = q.reverse();
+
+    setShownToasts(q);
+  }, [props.amountOfShownToasts, props.inverted, queue]);
 
   const toastContainerStyle: StyleProp<ViewStyle> = [
     style.toastContainer,
-    {
-      paddingTop: props.initialIndentation ?? 16,
-      gap: props.gap ?? 4,
-    },
+    props.containerStyle,
   ];
 
   return (
@@ -78,10 +82,7 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
 
 const style = StyleSheet.create({
   toastContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
     position: 'absolute',
     width: '100%',
-    borderWidth: 2,
   },
 });

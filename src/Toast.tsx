@@ -4,7 +4,8 @@ import { useToast } from './provider/useToast';
 
 type CommonProps = {
   timeout: number;
-  onHide?: () => void;
+  onHide?: () => Promise<void>;
+  onShow?: () => Promise<void>;
 };
 
 export type ToastProps = CommonProps & {
@@ -16,10 +17,10 @@ export type CreateToastProps = PropsWithChildren<CommonProps>;
 export const Toast: FC<PropsWithChildren<ToastProps>> = (props) => {
   const { hide } = useToast();
 
-  setTimeout(() => {
-    props.onHide?.();
+  setTimeout(async () => {
+    await props.onHide?.();
     hide(props);
   }, props.timeout);
 
-  return <View>{props.children}</View>;
+  return <View onLayout={() => props.onShow?.()}>{props.children}</View>;
 };
