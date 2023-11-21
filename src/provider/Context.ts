@@ -1,9 +1,9 @@
-import { ReactElement, createContext } from 'react';
-import type { ToastProps } from '../Toast';
+import { createContext } from 'react';
+import type { CreateToastProps, ToastProps } from '../Toast';
 
 export type ToastContextProps = {
   queue: ToastProps[];
-  show: (newToast: ReactElement) => void;
+  show: (newToast: CreateToastProps) => void;
   hide: (toastToHide: ToastProps) => void;
   clearQueue: () => void;
 };

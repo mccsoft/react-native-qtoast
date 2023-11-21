@@ -1,13 +1,12 @@
 import React, {
   FC,
   PropsWithChildren,
-  ReactElement,
   useCallback,
   useEffect,
   useState,
 } from 'react';
 import { ToastContext } from './Context';
-import { Toast, ToastProps } from '../Toast';
+import { CreateToastProps, Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
@@ -24,11 +23,6 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
 
-  const selectShownToasts = useCallback(
-    () => queue.slice(0, props.amountOfShownToasts).reverse(),
-    [props.amountOfShownToasts, queue]
-  );
-
   const hide = useCallback((toastToHide?: ToastProps) => {
     if (toastToHide === undefined) return;
 
@@ -38,11 +32,11 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   }, []);
 
   const show = useCallback(
-    (newToast: ReactElement) => {
+    (newToast: CreateToastProps) => {
       setQueue((current) => {
         if (current.length > props.amountOfShownToasts - 1) hide(current.at(0));
 
-        return [...current, { children: newToast, id: generateUniqueId() }];
+        return [...current, { ...newToast, id: generateUniqueId() }];
       });
     },
     [hide, props.amountOfShownToasts]
@@ -50,7 +44,10 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
 
   const clearQueue = () => setQueue([]);
 
-  useEffect(() => setShownToasts(selectShownToasts()), [selectShownToasts]);
+  useEffect(
+    () => setShownToasts(queue.slice(0, props.amountOfShownToasts).reverse()),
+    [props.amountOfShownToasts, queue]
+  );
 
   const toastContainerStyle: StyleProp<ViewStyle> = [
     style.toastContainer,
