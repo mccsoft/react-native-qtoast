@@ -12,7 +12,10 @@ export const RootComponent = () => {
         <Button
           title="press me"
           onPress={() => {
-            showToast(<BasicToast index={index} />);
+            showToast({
+              children: <BasicToast index={index} />,
+              timeout: 1000,
+            });
             setIndex((x) => x + 1);
           }}
         />
