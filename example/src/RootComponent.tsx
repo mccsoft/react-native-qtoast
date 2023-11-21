@@ -33,6 +33,7 @@ const BasicToast = (props: { index: number }): ReactElement => {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    gap: 16,
   },
 });

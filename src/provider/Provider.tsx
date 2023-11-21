@@ -7,33 +7,27 @@ import React, {
   useState,
 } from 'react';
 import { ToastContext } from './Context';
-import { AnimatedToastProps, Toast, ToastProps } from '../Toast';
-import { Animated } from 'react-native';
+import { Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 export type ToastProviderProps = {
   amountOfShownToasts: number;
+  position?: 'top' | 'bottom';
+  initialIndentation?: number;
+  gap?: number;
 };
 
 export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   props
 ) => {
   const [queue, setQueue] = useState<ToastProps[]>([]);
-  const [shownToasts, setShownToasts] = useState<AnimatedToastProps[]>([]);
+  const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
 
-  const selectShownToasts = useCallback((): AnimatedToastProps[] => {
-    const q = queue.slice(0, props.amountOfShownToasts).reverse();
-
-    return q.map(
-      (t, index): AnimatedToastProps => ({
-        ...t,
-        animatedPositionValue: new Animated.ValueXY({
-          x: 20,
-          y: 40 * (index + 1),
-        }),
-      })
-    );
-  }, [props.amountOfShownToasts, queue]);
+  const selectShownToasts = useCallback(
+    () => queue.slice(0, props.amountOfShownToasts).reverse(),
+    [props.amountOfShownToasts, queue]
+  );
 
   const hide = useCallback((toastToHide?: ToastProps) => {
     if (toastToHide === undefined) return;
@@ -53,9 +47,18 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     },
     [hide, props.amountOfShownToasts]
   );
+
   const clearQueue = () => setQueue([]);
 
   useEffect(() => setShownToasts(selectShownToasts()), [selectShownToasts]);
+
+  const toastContainerStyle: StyleProp<ViewStyle> = [
+    style.toastContainer,
+    {
+      paddingTop: props.initialIndentation ?? 16,
+      gap: props.gap ?? 4,
+    },
+  ];
 
   return (
     <ToastContext.Provider
@@ -66,10 +69,22 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
         clearQueue,
       }}
     >
-      {shownToasts.map((t) => (
-        <Toast key={t.id} {...t} />
-      ))}
+      <View style={toastContainerStyle}>
+        {shownToasts.map((t) => (
+          <Toast key={t.id} {...t} />
+        ))}
+      </View>
       {props.children}
     </ToastContext.Provider>
   );
 };
+
+const style = StyleSheet.create({
+  toastContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    borderWidth: 2,
+  },
+});

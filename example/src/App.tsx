@@ -5,7 +5,7 @@ import { RootComponent } from './RootComponent';
 
 export default function App() {
   return (
-    <ToastProvider amountOfShownToasts={3}>
+    <ToastProvider amountOfShownToasts={3} initialIndentation={40} gap={8}>
       <RootComponent />
     </ToastProvider>
   );

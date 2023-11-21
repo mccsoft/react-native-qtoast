@@ -1,3 +1,3 @@
-export { Toast, ToastProps, AnimatedToastProps } from './Toast';
+export { Toast, ToastProps } from './Toast';
 export { ToastProvider } from './provider/Provider';
 export { useToast } from './provider/useToast';
