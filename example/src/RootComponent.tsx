@@ -7,10 +7,15 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useToast } from '../../src/provider/useToast';
+import { useToast } from 'react-native-qtoast';
 
 export const RootComponent = () => {
-  const { show: showToast, clearQueue: clearToastQueue } = useToast();
+  const {
+    show: showToast,
+    clearQueue: clearToastQueue,
+    pause: pauseToasts,
+    unpause: unpauseToast,
+  } = useToast();
   const [index, setIndex] = useState<number>(0);
 
   const screenWidth = Dimensions.get('screen').width;
@@ -44,13 +49,15 @@ export const RootComponent = () => {
           onPress={() => {
             showToast({
               children: <BasicToast index={index} pos={animationValue} />,
-              timeout: 3000,
+              timeout: 5000,
               onShow: animateShowing,
               onHide: animateHiding,
             });
             setIndex((x) => x + 1);
           }}
         />
+        <Button title="pause all" onPress={() => pauseToasts()} />
+        <Button title="unpause all" onPress={() => unpauseToast()} />
         <Button title="clear query" onPress={clearToastQueue} />
       </View>
     </>
