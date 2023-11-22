@@ -24,37 +24,58 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
 
-  const hide = useCallback((toastToHide?: ToastProps) => {
-    if (toastToHide === undefined) return;
-
-    setQueue((current) =>
-      current.filter((toast) => toast.id !== toastToHide.id)
-    );
+  const hide = useCallback((id: string) => {
+    setQueue((current) => current.filter((toast) => toast.id !== id));
   }, []);
 
-  const show = useCallback(
-    (newToast: CreateToastProps) => {
-      setQueue((current) => {
-        if (
-          current.length >
-          (props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS) - 1
-        )
-          hide(current.at(0));
+  const show = useCallback((newToast: CreateToastProps): string => {
+    const _id = generateUniqueId();
+    setQueue((current) => [...current, { ...newToast, id: _id }]);
 
-        return [...current, { ...newToast, id: generateUniqueId() }];
-      });
+    return _id;
+  }, []);
+
+  const togglePause = useCallback(
+    (id: string | undefined, pause: boolean) => {
+      const pausedToasts = shownToasts.map((toast) =>
+        toast.id !== id && id !== undefined
+          ? toast
+          : { ...toast, paused: pause }
+      );
+
+      setShownToasts(pausedToasts);
     },
-    [hide, props.amountOfShownToasts]
+    [shownToasts]
+  );
+
+  const pause = useCallback(
+    (id?: string) => togglePause(id, true),
+    [togglePause]
+  );
+
+  const unpause = useCallback(
+    (id?: string) => togglePause(id, false),
+    [togglePause]
   );
 
   const clearQueue = () => setQueue([]);
 
-  useEffect(() => {
-    let q = queue.slice(0, props.amountOfShownToasts);
-    if (!props.inverted) q = q.reverse();
+  const getSliceFromQuery = useCallback(() => {
+    let q = queue.slice(
+      0,
+      props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS
+    );
 
-    setShownToasts(q);
-  }, [props.amountOfShownToasts, props.inverted, queue]);
+    shownToasts.forEach((toast) => {
+      q = q.map((x) => (x.id === toast.id ? toast : x));
+    });
+
+    return props.inverted ? q : q.reverse();
+  }, [props.amountOfShownToasts, props.inverted, queue, shownToasts]);
+
+  useEffect(() => {
+    setShownToasts(getSliceFromQuery());
+  }, [queue]);
 
   const toastContainerStyle: StyleProp<ViewStyle> = [
     style.toastContainer,
@@ -67,6 +88,8 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
         queue,
         show,
         hide,
+        pause,
+        unpause,
         clearQueue,
       }}
     >
