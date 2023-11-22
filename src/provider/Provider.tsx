@@ -58,7 +58,13 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     [togglePause]
   );
 
-  const clearQueue = () => setQueue([]);
+  const clearQueue = useCallback(() => {
+    shownToasts.forEach(async (t) => {
+      await t.onHide?.();
+      hide(t.id);
+    });
+    setQueue([]);
+  }, [hide, shownToasts]);
 
   const getSliceFromQuery = useCallback(() => {
     let q = queue.slice(
