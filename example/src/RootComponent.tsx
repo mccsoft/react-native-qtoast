@@ -45,27 +45,48 @@ export const RootComponent = () => {
     <>
       <View style={OwnStyles.appContainer}>
         <Button
-          title="press me"
+          title="Show toast"
           onPress={() => {
             showToast({
-              children: <BasicToast index={index} pos={animationValue} />,
-              timeout: 5000,
+              children: (
+                <BasicToast
+                  message={`message number ${index}`}
+                  pos={animationValue}
+                />
+              ),
+              timeout: 1000,
               onShow: animateShowing,
               onHide: animateHiding,
             });
             setIndex((x) => x + 1);
           }}
         />
-        <Button title="pause all" onPress={() => pauseToasts()} />
-        <Button title="unpause all" onPress={() => unpauseToast()} />
-        <Button title="clear query" onPress={clearToastQueue} />
+        <Button
+          title="Show toast w/out timeout"
+          onPress={() => {
+            showToast({
+              children: (
+                <BasicToast
+                  message="I am not gonna leave by myself"
+                  pos={animationValue}
+                />
+              ),
+              onShow: animateShowing,
+              onHide: animateHiding,
+            });
+            setIndex((x) => x + 1);
+          }}
+        />
+        <Button title="Pause all" onPress={() => pauseToasts()} />
+        <Button title="Unpause all" onPress={() => unpauseToast()} />
+        <Button title="Clear query" onPress={clearToastQueue} />
       </View>
     </>
   );
 };
 
 const BasicToast = (props: {
-  index: number;
+  message: string;
   pos: Animated.ValueXY;
 }): ReactElement => {
   return (
@@ -78,7 +99,7 @@ const BasicToast = (props: {
       ]}
     >
       <View style={OwnStyles.messageContainer}>
-        <Text style={OwnStyles.message}>message amogus {props.index}</Text>
+        <Text style={OwnStyles.message}>{props.message}</Text>
       </View>
     </Animated.View>
   );
