@@ -12,7 +12,7 @@ import { useToast } from 'react-native-qtoast';
 export const RootComponent = () => {
   const {
     show: showToast,
-    clearQueue: clearToastQueue,
+    hide: hideToasts,
     pause: pauseToasts,
     unpause: unpauseToast,
   } = useToast();
@@ -79,7 +79,7 @@ export const RootComponent = () => {
         />
         <Button title="Pause all" onPress={() => pauseToasts()} />
         <Button title="Unpause all" onPress={() => unpauseToast()} />
-        <Button title="Clear query" onPress={clearToastQueue} />
+        <Button title="Clear query" onPress={() => hideToasts()} />
       </View>
     </>
   );

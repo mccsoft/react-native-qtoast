@@ -24,9 +24,22 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
 
-  const hide = useCallback((id: string) => {
-    setQueue((current) => current.filter((toast) => toast.id !== id));
-  }, []);
+  const hide = useCallback(
+    async (id?: string) => {
+      if (id === undefined) {
+        await Promise.all(
+          shownToasts.map(async (toast) => await toast.onHide?.())
+        );
+      } else {
+        await shownToasts.find((x) => x.id === id)?.onHide?.();
+      }
+
+      setQueue((current) =>
+        id === undefined ? [] : current.filter((toast) => toast.id !== id)
+      );
+    },
+    [shownToasts]
+  );
 
   const show = useCallback((newToast: CreateToastProps): string => {
     const _id = generateUniqueId();
@@ -58,14 +71,6 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     [togglePause]
   );
 
-  const clearQueue = useCallback(() => {
-    shownToasts.forEach(async (t) => {
-      await t.onHide?.();
-      hide(t.id);
-    });
-    setQueue([]);
-  }, [hide, shownToasts]);
-
   const getSliceFromQuery = useCallback(() => {
     let q = queue.slice(
       0,
@@ -81,6 +86,7 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
 
   useEffect(() => {
     setShownToasts(getSliceFromQuery());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue]);
 
   const toastContainerStyle: StyleProp<ViewStyle> = [
@@ -96,7 +102,6 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
         hide,
         pause,
         unpause,
-        clearQueue,
       }}
     >
       <View style={toastContainerStyle}>
