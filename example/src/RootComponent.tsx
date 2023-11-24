@@ -1,20 +1,15 @@
-import React, { ReactElement, useState } from 'react';
-import {
-  Animated,
-  Button,
-  Dimensions,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, { useState } from 'react';
+import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
 import { useToast } from 'react-native-qtoast';
+import { AppButton } from './common/AppButton';
+import { BasicToast } from './common/BasicToast';
 
 export const RootComponent = () => {
   const {
     show: showToast,
     hide: hideToasts,
     pause: pauseToasts,
-    unpause: unpauseToast,
+    unpause: unpauseToasts,
   } = useToast();
   const [index, setIndex] = useState<number>(0);
 
@@ -41,97 +36,63 @@ export const RootComponent = () => {
       }).start(() => resolve());
     });
 
+  const showToastOnPress = (message: string, timeout?: number) => {
+    showToast({
+      children: <BasicToast message={message} pos={animationValue} />,
+      timeout: timeout,
+      onShow: animateShowing,
+      onHide: animateHiding,
+    });
+  };
+
   return (
     <>
       <View style={OwnStyles.appContainer}>
-        <Button
-          title="Show toast"
+        <StyledAppButton
           onPress={() => {
-            showToast({
-              children: (
-                <BasicToast
-                  message={`message number ${index}`}
-                  pos={animationValue}
-                />
-              ),
-              timeout: 1000,
-              onShow: animateShowing,
-              onHide: animateHiding,
-            });
+            showToastOnPress(`message toast number ${index}`, 1500);
             setIndex((x) => x + 1);
           }}
+          message="Show toast"
         />
-        <Button
-          title="Show toast w/out timeout"
+        <StyledAppButton
           onPress={() => {
-            showToast({
-              children: (
-                <BasicToast
-                  message="I am not gonna leave by myself"
-                  pos={animationValue}
-                />
-              ),
-              onShow: animateShowing,
-              onHide: animateHiding,
-            });
-            setIndex((x) => x + 1);
+            showToastOnPress(`I'm permanent`);
           }}
+          message="Show permanent toast"
         />
-        <Button title="Pause all" onPress={() => pauseToasts()} />
-        <Button title="Unpause all" onPress={() => unpauseToast()} />
-        <Button title="Clear query" onPress={() => hideToasts()} />
+
+        <StyledAppButton
+          onPress={() => pauseToasts()}
+          message="Pause all toasts"
+        />
+        <StyledAppButton
+          onPress={() => unpauseToasts()}
+          message="Unpause all toasts"
+        />
+
+        <StyledAppButton onPress={() => hideToasts()} message="Clear queue" />
       </View>
     </>
   );
 };
 
-const BasicToast = (props: {
-  message: string;
-  pos: Animated.ValueXY;
-}): ReactElement => {
-  return (
-    <Animated.View
-      style={[
-        OwnStyles.toast,
-        {
-          transform: [{ translateX: props.pos.x }, { translateY: props.pos.y }],
-        },
-      ]}
-    >
-      <View style={OwnStyles.messageContainer}>
-        <Text style={OwnStyles.message}>{props.message}</Text>
-      </View>
-    </Animated.View>
-  );
-};
+const StyledAppButton = (props: { message: string; onPress: () => void }) => (
+  <AppButton onPress={props.onPress} style={OwnStyles.button}>
+    <Text>{props.message}</Text>
+  </AppButton>
+);
 
 const OwnStyles = StyleSheet.create({
   appContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     gap: 16,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
 
-  messageContainer: {
-    paddingTop: 16,
-  },
-
-  message: {
-    fontWeight: '400',
-    lineHeight: 17,
-  },
-
-  toast: {
-    minHeight: 60,
-    borderRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 4,
-    marginHorizontal: 16,
+  button: {
+    padding: 16,
   },
 });
