@@ -1,6 +1,6 @@
 {
   "name": "@mccsoft/react-native-qtoast",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "toast library for mcc",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
