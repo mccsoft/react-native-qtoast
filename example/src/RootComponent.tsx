@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
-import { useToast } from 'react-native-qtoast';
+import { useToast } from '@mccsoft/react-native-qtoast';
 import { AppButton } from './common/AppButton';
 import { BasicToast } from './common/BasicToast';
 

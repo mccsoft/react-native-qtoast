@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { ToastProvider } from 'react-native-qtoast';
 import { RootComponent } from './RootComponent';
+import { ToastProvider } from '@mccsoft/react-native-qtoast';
 
 export default function App() {
   return (

@@ -1,4 +1,4 @@
-# react-native-qtoast
+# @mccsoft/react-native-qtoast
 
 Toast component for React Native
 
@@ -11,7 +11,7 @@ Features:
 ## Installation
 
 ```sh
-npm install react-native-qtoast
+npm install @mccsoft/react-native-qtoast
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ npm install react-native-qtoast
 Wrap your app in ToastProvider component:
 
 ```js
-import { ToastProvider } from 'react-native-qtoast';
+import { ToastProvider } from '@mccsoft/react-native-qtoast';
 
 export default function App() {
   return (
@@ -32,7 +32,7 @@ export default function App() {
 
 Then use 'useToast' hook inside any of your components:
 ```js
-import { useToast } from 'react-native-qtoast';
+import { useToast } from '@mccsoft/react-native-qtoast';
 
 const Component = () => {
   const { show } = useToast();
