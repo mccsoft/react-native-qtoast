@@ -3,10 +3,10 @@ import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
 import { useToast } from '@mccsoft/react-native-qtoast';
 import { AppButton } from './common/AppButton';
 import { BasicToast } from './common/BasicToast';
+import { showToast as showToastFromHelper } from './showToastHelper';
 
 export const RootComponent = () => {
   const {
-    show: showToast,
     hide: hideToasts,
     pause: pauseToasts,
     unpause: unpauseToasts,
@@ -37,7 +37,7 @@ export const RootComponent = () => {
     });
 
   const showToastOnPress = (message: string, timeout?: number) => {
-    showToast({
+    showToastFromHelper({
       children: <BasicToast message={message} pos={animationValue} />,
       timeout: timeout,
       onShow: animateShowing,

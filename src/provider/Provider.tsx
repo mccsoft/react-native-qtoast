@@ -3,9 +3,10 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
-import { ToastContext } from './Context';
+import { ToastContext, ToastContextProps } from './Context';
 import { CreateToastProps, Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
@@ -18,11 +19,14 @@ export type ToastProviderProps = {
 
 const DEFAULT_AMOUNT_OF_TOASTS = 3;
 
+export let ToastAccessor: ToastContextProps;
+
 export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   props
 ) => {
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
+  const providerRef = useRef<ToastContextProps>();
 
   const hide = useCallback(
     async (id?: string) => {
@@ -93,6 +97,18 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     style.toastContainer,
     props.containerStyle,
   ];
+
+  useEffect(() => {
+    providerRef.current = {
+      queue,
+      show,
+      hide,
+      pause,
+      unpause,
+    };
+
+    ToastAccessor = providerRef.current;
+  }, [hide, pause, queue, show, unpause]);
 
   return (
     <ToastContext.Provider

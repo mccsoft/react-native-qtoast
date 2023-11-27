@@ -7,18 +7,18 @@ import React, {
 import { View } from 'react-native';
 import { useToast } from './provider/useToast';
 
-type CommonProps = PropsWithChildren<{
+export type CommonToastProps = PropsWithChildren<{
   timeout?: number;
   onHide?: () => Promise<void>;
   onShow?: () => Promise<void>;
 }>;
 
-export type ToastProps = CommonProps & {
+export type ToastProps = CommonToastProps & {
   id: string;
   paused?: boolean;
 };
 
-export type CreateToastProps = CommonProps;
+export type CreateToastProps = CommonToastProps;
 
 export const Toast: FC<ToastProps> = (props) => {
   const { hide } = useToast();
