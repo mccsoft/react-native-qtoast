@@ -5,7 +5,7 @@ import { RootComponent } from './RootComponent';
 
 export default function App() {
   return (
-    <ToastProvider containerStyle={{ paddingTop: 40 }}>
+    <ToastProvider containerStyle={{ paddingTop: 40, gap: 8 }}>
       <RootComponent />
     </ToastProvider>
   );

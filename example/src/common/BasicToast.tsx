@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactElement } from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Animated, StyleSheet, Text } from 'react-native';
 
 export const BasicToast = (props: {
   message: string;
@@ -15,9 +15,7 @@ export const BasicToast = (props: {
         },
       ]}
     >
-      <View style={OwnStyles.messageContainer}>
-        <Text style={OwnStyles.message}>{props.message}</Text>
-      </View>
+      <Text style={OwnStyles.message}>{props.message}</Text>
     </Animated.View>
   );
 };
@@ -26,23 +24,13 @@ const OwnStyles = StyleSheet.create({
   toast: {
     minHeight: 60,
     borderRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 4,
     marginHorizontal: 16,
-  },
-
-  messageContainer: {
-    paddingTop: 16,
+    borderWidth: 2,
+    justifyContent: 'center',
+    padding: 16,
   },
 
   message: {
     fontWeight: '400',
-    lineHeight: 17,
   },
 });

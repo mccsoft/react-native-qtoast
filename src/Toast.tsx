@@ -7,20 +7,20 @@ import React, {
 import { View } from 'react-native';
 import { useToast } from './provider/useToast';
 
-type CommonProps = {
+type CommonProps = PropsWithChildren<{
   timeout?: number;
   onHide?: () => Promise<void>;
   onShow?: () => Promise<void>;
-};
+}>;
 
 export type ToastProps = CommonProps & {
   id: string;
   paused?: boolean;
 };
 
-export type CreateToastProps = PropsWithChildren<CommonProps>;
+export type CreateToastProps = CommonProps;
 
-export const Toast: FC<PropsWithChildren<ToastProps>> = (props) => {
+export const Toast: FC<ToastProps> = (props) => {
   const { hide } = useToast();
   const timeoutEnd = useRef<number | null>(null);
   const remainingTimeout = useRef<typeof props.timeout>(props.timeout);
@@ -49,11 +49,6 @@ export const Toast: FC<PropsWithChildren<ToastProps>> = (props) => {
 
     timeoutEnd.current =
       timeoutEnd.current ?? new Date().getTime() + props.timeout;
-
-    return () => {
-      clearTimeout(timer.current ?? undefined);
-      timer.current = null;
-    };
   }, [hide, props, props.paused]);
 
   return <View onLayout={() => props.onShow?.()}>{props.children}</View>;

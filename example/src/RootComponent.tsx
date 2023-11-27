@@ -50,7 +50,7 @@ export const RootComponent = () => {
       <View style={OwnStyles.appContainer}>
         <StyledAppButton
           onPress={() => {
-            showToastOnPress(`message toast number ${index}`, 1500);
+            showToastOnPress(`Message toast number ${index}`, 5000);
             setIndex((x) => x + 1);
           }}
           message="Show toast"
