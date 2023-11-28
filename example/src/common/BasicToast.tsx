@@ -1,11 +1,13 @@
 import React from 'react';
-import { ReactElement } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
+import { AppButton } from './AppButton';
+import { ToastOptions } from '../../../src/Toast';
 
 export const BasicToast = (props: {
-  message: string;
   pos: Animated.ValueXY;
-}): ReactElement => {
+  message: string;
+  options: ToastOptions;
+}) => {
   return (
     <Animated.View
       style={[
@@ -16,6 +18,9 @@ export const BasicToast = (props: {
       ]}
     >
       <Text style={OwnStyles.message}>{props.message}</Text>
+      <AppButton onPress={async () => await props.options.hide()}>
+        <Text>Close</Text>
+      </AppButton>
     </Animated.View>
   );
 };
@@ -26,8 +31,9 @@ const OwnStyles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 16,
     borderWidth: 2,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     padding: 16,
+    flexDirection: 'row',
   },
 
   message: {

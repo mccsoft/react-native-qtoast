@@ -1,17 +1,17 @@
-import React, {
-  useEffect,
-  type FC,
-  type PropsWithChildren,
-  useRef,
-} from 'react';
+import React, { useEffect, type FC, useRef, useCallback } from 'react';
 import { View } from 'react-native';
 import { useToast } from './provider/useToast';
 
-export type CommonToastProps = PropsWithChildren<{
+export type ToastOptions = {
+  hide: () => Promise<void>;
+};
+
+export type CommonToastProps = {
   timeout?: number;
   onHide?: () => Promise<void>;
   onShow?: () => Promise<void>;
-}>;
+  renderToast: (options: ToastOptions) => React.ReactElement;
+};
 
 export type ToastProps = CommonToastProps & {
   id: string;
@@ -25,6 +25,11 @@ export const Toast: FC<ToastProps> = (props) => {
   const timeoutEnd = useRef<number | null>(null);
   const remainingTimeout = useRef<typeof props.timeout>(props.timeout);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const onHide = useCallback(async () => {
+    await props.onHide?.();
+    hide(props.id);
+  }, [hide, props]);
 
   useEffect(() => {
     if (props.paused) {
@@ -42,14 +47,15 @@ export const Toast: FC<ToastProps> = (props) => {
 
     timer.current =
       timer.current ??
-      setTimeout(async () => {
-        await props.onHide?.();
-        hide(props.id);
-      }, remainingTimeout.current);
+      setTimeout(async () => await onHide(), remainingTimeout.current);
 
     timeoutEnd.current =
       timeoutEnd.current ?? new Date().getTime() + props.timeout;
-  }, [hide, props, props.paused]);
+  }, [hide, onHide, props, props.paused]);
 
-  return <View onLayout={() => props.onShow?.()}>{props.children}</View>;
+  return (
+    <View onLayout={() => props.onShow?.()}>
+      {props.renderToast({ hide: onHide })}
+    </View>
+  );
 };

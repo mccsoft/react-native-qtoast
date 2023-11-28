@@ -39,7 +39,7 @@ const Component = () => {
 
   useEffect(() => show(
     {
-      children: <Text>Hello, World!</Text>,
+      renderToast: () => <Text>Hello, World!</Text>,
       timeout: 1000
     }
   ), []);
@@ -58,14 +58,14 @@ Returns the **id** of created toast.
 
 ```js
 show({
-  children: ReactNode | undefined,
+  renderToast: (options: ToastOptions) => JSX.Element,
   timeout: number | undefined,
   onShow: () => Promise<void> | undefined
   onHide: () => Promise<void> | undefined
 }): string
 ```
 
-`children`: the view of your toast. If `undefined`, nothing will show.
+`renderToast`: a function that returns the view of your toast. Can accept [`ToastOptions`](#toastoptions) for use inside toast view. If `undefined`, nothing will show.
 \
 `timeout`: specifies how long (in ms) the toast will be on the screen. If undefined, **stays forever**, until [hide]() is called.
 \
@@ -131,6 +131,20 @@ The style of the container that wraps all toasts. Uses `StyleProp<ViewStyle>`.
 
 Determines the order in which toasts are shown.
 If `true`, new toast will be shown below previous, `false` or `undefined` makes new toast appear above previous.
+
+## ToastOptions
+
+An object that provides functions for use inside your toast component
+
+```js
+type ToastOptions = {
+  hide: () => Promise<void>;
+}
+```
+
+### `hide()`
+
+Hides current toast (by current means the toast in which function was called)
 
 ## License
 
