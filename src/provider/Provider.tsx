@@ -14,7 +14,6 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 export type ToastProviderProps = {
   amountOfShownToasts?: number;
   containerStyle?: StyleProp<ViewStyle>;
-  inverted?: boolean;
 };
 
 const DEFAULT_AMOUNT_OF_TOASTS = 3;
@@ -75,7 +74,7 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     [togglePause]
   );
 
-  const getSliceFromQuery = useCallback(() => {
+  const getSliceFromQueue = useCallback(() => {
     let q = queue.slice(
       0,
       props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS
@@ -85,11 +84,11 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
       q = q.map((x) => (x.id === toast.id ? toast : x));
     });
 
-    return props.inverted ? q : q.reverse();
-  }, [props.amountOfShownToasts, props.inverted, queue, shownToasts]);
+    return q.reverse();
+  }, [props.amountOfShownToasts, queue, shownToasts]);
 
   useEffect(() => {
-    setShownToasts(getSliceFromQuery());
+    setShownToasts(getSliceFromQueue());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue]);
 

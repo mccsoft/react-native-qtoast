@@ -52,7 +52,7 @@ All of the methods that come from **useToast()** hook
 
 ### `show()`
 
-Adds new toast to the query and shows it immediately. Adding new toast when there are [amountOfShownToast](#amountofshowntoasts) of toasts on the screen won't show it until one of the shown toast is dismissed.
+Adds new toast to the queue and shows it immediately. Adding new toast when there are [amountOfShownToast](#amountofshowntoasts) of toasts on the screen won't show it until one of the shown toast is dismissed.
 
 Returns the **id** of created toast.
 
@@ -71,11 +71,11 @@ show({
 \
 `onShow`: a callback that fires **after** the toast is rendered
 \
-`onHide`: a callback that fires **before** the toast is removed from query
+`onHide`: a callback that fires **before** the toast is removed from queue
 
 ### `hide()`
 
-Removes toast with specified **id** from query
+Removes toast with specified **id** from queue
 
 ```js
 hide(
@@ -83,7 +83,7 @@ hide(
 )
 ```
 
-`id`: the id of the toast from query. If undefined, clears the query, calling onHide for each shown toast beforehand
+`id`: the id of the toast from queue. If undefined, clears the queue, calling onHide for each shown toast beforehand
 
 ### `pause()`
 
@@ -95,7 +95,7 @@ pause(
 )
 ```
 
-`id`: the id of the toast from query. If undefined, pauses all toasts on screen.
+`id`: the id of the toast from queue. If undefined, pauses all toasts on screen.
 
 ### `unpause()`
 
@@ -107,7 +107,7 @@ unpause(
 )
 ```
 
-`id`: the id of the toast from query. If undefined, unpauses all toasts on screen.
+`id`: the id of the toast from queue. If undefined, unpauses all toasts on screen.
 
 ## ToastProvider props
 
@@ -115,7 +115,6 @@ unpause(
 <ToastProvider
   amountOfShownToasts={2}
   containerStyle={{ gap: 2 }}
-  inverted={true}
 />
 ```
 
@@ -126,11 +125,6 @@ Determines how many toasts can be rendered on the screen on the same time. If un
 ### containerStyle
 
 The style of the container that wraps all toasts. Uses `StyleProp<ViewStyle>`.
-
-### inverted
-
-Determines the order in which toasts are shown.
-If `true`, new toast will be shown below previous, `false` or `undefined` makes new toast appear above previous.
 
 ## ToastOptions
 
