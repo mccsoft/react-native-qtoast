@@ -3,6 +3,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
@@ -26,23 +27,24 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
   const providerRef = useRef<ToastContextProps>();
+  const shownToastsRef = useRef<ToastProps[]>(shownToasts);
 
-  const hide = useCallback(
-    async (id?: string) => {
-      if (id === undefined) {
-        await Promise.all(
-          shownToasts.map(async (toast) => await toast.onHide?.())
-        );
-      } else {
-        await shownToasts.find((x) => x.id === id)?.onHide?.();
-      }
+  useLayoutEffect(() => {
+    shownToastsRef.current = shownToasts;
+  });
 
-      setQueue((current) =>
-        id === undefined ? [] : current.filter((toast) => toast.id !== id)
-      );
-    },
-    [shownToasts]
-  );
+  const hide = useCallback(async (id?: string) => {
+    const toasts = shownToastsRef.current;
+    if (id === undefined) {
+      await Promise.all(toasts.map(async (toast) => await toast.onHide?.()));
+    } else {
+      await toasts.find((x) => x.id === id)?.onHide?.();
+    }
+
+    setQueue((current) =>
+      id === undefined ? [] : current.filter((toast) => toast.id !== id)
+    );
+  }, []);
 
   const show = useCallback((newToast: CreateToastProps): string => {
     const _id = generateUniqueId();
@@ -51,18 +53,13 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     return _id;
   }, []);
 
-  const togglePause = useCallback(
-    (id: string | undefined, pause: boolean) => {
-      const pausedToasts = shownToasts.map((toast) =>
-        toast.id !== id && id !== undefined
-          ? toast
-          : { ...toast, paused: pause }
-      );
+  const togglePause = useCallback((id: string | undefined, pause: boolean) => {
+    const pausedToasts = shownToastsRef.current.map((toast) =>
+      toast.id !== id && id !== undefined ? toast : { ...toast, paused: pause }
+    );
 
-      setShownToasts(pausedToasts);
-    },
-    [shownToasts]
-  );
+    setShownToasts(pausedToasts);
+  }, []);
 
   const pause = useCallback(
     (id?: string) => togglePause(id, true),
@@ -80,12 +77,12 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
       props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS
     );
 
-    shownToasts.forEach((toast) => {
+    shownToastsRef.current.forEach((toast) => {
       q = q.map((x) => (x.id === toast.id ? toast : x));
     });
 
     return q.reverse();
-  }, [props.amountOfShownToasts, queue, shownToasts]);
+  }, [props.amountOfShownToasts, queue]);
 
   useEffect(() => {
     setShownToasts(getSliceFromQueue());
