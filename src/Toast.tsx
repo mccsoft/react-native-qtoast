@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { useToast } from './provider/useToast';
 
 export type ToastOptions = {
+  id: string;
   hide: () => Promise<void>;
 };
 
@@ -55,7 +56,7 @@ export const Toast: FC<ToastProps> = (props) => {
 
   return (
     <View onLayout={() => props.onShow?.()}>
-      {props.renderToast({ hide: onHide })}
+      {props.renderToast({ id: props.id, hide: onHide })}
     </View>
   );
 };
