@@ -11,6 +11,7 @@ import { ToastContext, ToastContextProps } from './Context';
 import { CreateToastProps, Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { createAnimatedToastConfig } from '../components/AnimatedToastView';
 
 export type ToastProviderProps = {
   amountOfShownToasts?: number;
@@ -47,8 +48,12 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   }, []);
 
   const show = useCallback((newToast: CreateToastProps): string => {
+    const animatedToast = newToast.animated
+      ? createAnimatedToastConfig(newToast)
+      : newToast;
+
     const _id = generateUniqueId();
-    setQueue((current) => [...current, { ...newToast, id: _id }]);
+    setQueue((current) => [...current, { ...animatedToast, id: _id }]);
 
     return _id;
   }, []);
