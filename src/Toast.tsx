@@ -19,7 +19,9 @@ export type ToastProps = CommonToastProps & {
   paused?: boolean;
 };
 
-export type CreateToastProps = CommonToastProps;
+export type CreateToastProps = CommonToastProps & {
+  animated?: boolean;
+};
 
 export const Toast: FC<ToastProps> = (props) => {
   const { hide } = useToast();

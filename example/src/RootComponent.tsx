@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useToast } from '@mccsoft/react-native-qtoast';
 import { AppButton } from './common/AppButton';
 import { showToast as showToastFromHelper } from './showToastHelper';
@@ -14,37 +14,12 @@ export const RootComponent = () => {
   } = useToast();
   const [index, setIndex] = useState<number>(0);
 
-  const screenWidth = Dimensions.get('screen').width;
-
-  const animationValue = new Animated.ValueXY({
-    x: screenWidth,
-    y: 0,
-  });
-
-  const animateShowing = () =>
-    new Promise<void>((resolve) => {
-      Animated.spring(animationValue, {
-        toValue: 0,
-        useNativeDriver: true,
-      }).start(() => resolve());
-    });
-
-  const animateHiding = () =>
-    new Promise<void>((resolve) => {
-      Animated.spring(animationValue.x, {
-        toValue: screenWidth,
-        useNativeDriver: true,
-      }).start(() => resolve());
-    });
-
   const showToastOnPress = (message: string, timeout?: number) => {
     showToastFromHelper({
       renderToast: (options: ToastOptions) => (
-        <BasicToast message={message} options={options} pos={animationValue} />
+        <BasicToast message={message} options={options} />
       ),
       timeout: timeout,
-      onShow: animateShowing,
-      onHide: animateHiding,
     });
   };
 
