@@ -11,7 +11,8 @@ import { ToastContext, ToastContextProps } from './Context';
 import { CreateToastProps, Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { createAnimatedToastConfig } from '../components/AnimatedToastView';
+import { createAnimatedToastConfig } from '../components/InteractiveToastView';
+import { FlatList } from 'react-native';
 
 export type ToastProviderProps = {
   amountOfShownToasts?: number;
@@ -28,7 +29,7 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
   const [queue, setQueue] = useState<ToastProps[]>([]);
   const [shownToasts, setShownToasts] = useState<ToastProps[]>([]);
   const providerRef = useRef<ToastContextProps>();
-  const shownToastsRef = useRef<ToastProps[]>(shownToasts);
+  const shownToastsRef = useRef(shownToasts);
 
   useLayoutEffect(() => {
     shownToastsRef.current = shownToasts;
@@ -94,11 +95,6 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue]);
 
-  const toastContainerStyle: StyleProp<ViewStyle> = [
-    style.toastContainer,
-    props.containerStyle,
-  ];
-
   useEffect(() => {
     providerRef.current = {
       queue,
@@ -121,10 +117,13 @@ export const ToastProvider: FC<PropsWithChildren<ToastProviderProps>> = (
         unpause,
       }}
     >
-      <View style={toastContainerStyle}>
-        {shownToasts.map((t) => (
-          <Toast key={t.id} {...t} />
-        ))}
+      <View style={style.toastContainer}>
+        <FlatList
+          contentContainerStyle={props.containerStyle}
+          data={shownToasts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <Toast {...item} />}
+        />
       </View>
       {props.children}
     </ToastContext.Provider>
