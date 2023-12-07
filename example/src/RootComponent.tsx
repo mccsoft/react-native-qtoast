@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useToast } from '@mccsoft/react-native-qtoast';
 import { AppButton } from './common/AppButton';
 import { showToast as showToastFromHelper } from './showToastHelper';
 import { BasicToast } from './common/BasicToast';
 import { ToastOptions } from '../../src/Toast';
+import { useToast } from '../../src/provider/useToast';
 
 export const RootComponent = () => {
   const {
@@ -23,33 +23,43 @@ export const RootComponent = () => {
     });
   };
 
+  const buttons: { message: string; onPress: () => void }[] = useMemo(
+    () => [
+      {
+        onPress: () => {
+          showToastOnPress(`Message toast number ${index}`, 5000);
+          setIndex((x) => x + 1);
+        },
+        message: 'Show toast',
+      },
+      {
+        onPress: () => {
+          showToastOnPress(`I'm permanent`);
+        },
+        message: 'Show permanent toast',
+      },
+      {
+        onPress: () => pauseToasts(),
+        message: 'Pause all toasts',
+      },
+      {
+        onPress: () => unpauseToasts(),
+        message: 'Unpause all toasts',
+      },
+      {
+        onPress: () => hideToasts(),
+        message: 'Clear queue',
+      },
+    ],
+    [hideToasts, index, pauseToasts, unpauseToasts]
+  );
+
   return (
     <>
       <View style={OwnStyles.appContainer}>
-        <StyledAppButton
-          onPress={() => {
-            showToastOnPress(`Message toast number ${index}`, 5000);
-            setIndex((x) => x + 1);
-          }}
-          message="Show toast"
-        />
-        <StyledAppButton
-          onPress={() => {
-            showToastOnPress(`I'm permanent`);
-          }}
-          message="Show permanent toast"
-        />
-
-        <StyledAppButton
-          onPress={() => pauseToasts()}
-          message="Pause all toasts"
-        />
-        <StyledAppButton
-          onPress={() => unpauseToasts()}
-          message="Unpause all toasts"
-        />
-
-        <StyledAppButton onPress={() => hideToasts()} message="Clear queue" />
+        {buttons.map((button) => (
+          <StyledAppButton {...button} key={button.message} />
+        ))}
       </View>
     </>
   );
