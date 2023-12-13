@@ -11,11 +11,11 @@ import { CreateToastProps, Toast, ToastProps } from '../Toast';
 import { generateUniqueId } from '../helpers/toast-helpers';
 import { StyleSheet, View } from 'react-native';
 import { createAnimatedToastConfig } from '../components/InteractiveToastView';
-import { StyleProp } from 'react-native';
 import { ViewStyle } from 'react-native';
 
 export type ToastProviderProps = PropsWithChildren<{
-  containerStyle?: StyleProp<ViewStyle>;
+  wrapperStyle?: ViewStyle;
+  containerStyle?: ViewStyle;
   amountOfShownToasts?: number;
   position?: 'top' | 'bottom';
   inverted?: boolean;
@@ -109,6 +109,7 @@ export const ToastProvider = (props: ToastProviderProps) => {
 
   const outerContainerStyle: ViewStyle = {
     ...style.toastContainer,
+    ...props.wrapperStyle,
     justifyContent: props.position === 'bottom' ? 'flex-end' : 'flex-start',
   };
 
@@ -122,8 +123,8 @@ export const ToastProvider = (props: ToastProviderProps) => {
         unpause,
       }}
     >
-      <View style={outerContainerStyle}>
-        <View style={props.containerStyle}>
+      <View style={outerContainerStyle} pointerEvents="box-none">
+        <View style={props.containerStyle} pointerEvents="box-none">
           {shownToasts.map((toast) => (
             <Toast key={toast.id} {...toast} />
           ))}

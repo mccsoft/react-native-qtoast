@@ -135,6 +135,7 @@ unpause(
 ```js
 <ToastProvider
   amountOfShownToasts={2}
+  wrapperStyle={{ zIndex: 2 }}
   containerStyle={{ gap: 2 }}
   position={"top"}
   inverted={false}
@@ -145,7 +146,11 @@ unpause(
 
 Determines how many toasts can be rendered on the screen on the same time. If undefined, sets to 3.
 
-### `containerStyle`: StyleProp\<ViewStyle\>
+### `wrapperStyle`: ViewStyle
+
+The style of `View` that wraps the container with all of the toast. Usually used for setting `zIndex`.
+
+### `containerStyle`: ViewStyle
 
 The style of the container that wraps all toasts.
 
