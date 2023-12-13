@@ -17,6 +17,8 @@ import { ViewStyle } from 'react-native';
 export type ToastProviderProps = PropsWithChildren<{
   containerStyle?: StyleProp<ViewStyle>;
   amountOfShownToasts?: number;
+  position?: 'top' | 'bottom';
+  inverted?: boolean;
 }>;
 
 const DEFAULT_AMOUNT_OF_TOASTS = 3;
@@ -85,8 +87,8 @@ export const ToastProvider = (props: ToastProviderProps) => {
       q = q.map((x) => (x.id === toast.id ? toast : x));
     });
 
-    return q.reverse();
-  }, [props.amountOfShownToasts, queue]);
+    return props.inverted ? q : q.reverse();
+  }, [props.amountOfShownToasts, props.inverted, queue]);
 
   useEffect(() => {
     setShownToasts(getSliceFromQueue());
@@ -105,6 +107,11 @@ export const ToastProvider = (props: ToastProviderProps) => {
     ToastAccessor = providerRef.current;
   }, [hide, pause, queue, show, unpause]);
 
+  const outerContainerStyle: ViewStyle = {
+    ...style.toastContainer,
+    justifyContent: props.position === 'bottom' ? 'flex-end' : 'flex-start',
+  };
+
   return (
     <ToastContext.Provider
       value={{
@@ -115,10 +122,12 @@ export const ToastProvider = (props: ToastProviderProps) => {
         unpause,
       }}
     >
-      <View style={[style.toastContainer, props.containerStyle]}>
-        {shownToasts.map((toast) => (
-          <Toast key={toast.id} {...toast} />
-        ))}
+      <View style={outerContainerStyle}>
+        <View style={props.containerStyle}>
+          {shownToasts.map((toast) => (
+            <Toast key={toast.id} {...toast} />
+          ))}
+        </View>
       </View>
       {props.children}
     </ToastContext.Provider>
@@ -129,5 +138,6 @@ const style = StyleSheet.create({
   toastContainer: {
     position: 'absolute',
     width: '100%',
+    height: '100%',
   },
 });

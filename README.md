@@ -7,6 +7,7 @@ Features:
 - Queueing: add toasts to a queue so that they will be shown sequentially
 - Typed with Typescript
 - Fully customizable
+- Out-of-the-box support of animations an toast swipes
 
 ## Demo
 
@@ -135,16 +136,26 @@ unpause(
 <ToastProvider
   amountOfShownToasts={2}
   containerStyle={{ gap: 2 }}
+  position={"top"}
+  inverted={false}
 />
 ```
 
-### `amountOfShownToasts`
+### `amountOfShownToasts`: number
 
 Determines how many toasts can be rendered on the screen on the same time. If undefined, sets to 3.
 
-### `containerStyle`
+### `containerStyle`: StyleProp\<ViewStyle\>
 
-The style of the container that wraps all toasts. Uses `StyleProp<ViewStyle>`.
+The style of the container that wraps all toasts.
+
+### `position`: 'bottom' | 'top'
+
+Determines the position where toasts will be shown. If `bottom`, toasts will appear at the bottom at the screen. Defaults to `top`.
+
+### `inverted`: boolean
+
+Determines how new toasts should be shown: below or above old ones. If `true`, new toasts will appear below old. Defaults to `false`
 
 ## ToastOptions
 
