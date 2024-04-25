@@ -1,18 +1,23 @@
 import React, { useMemo } from 'react';
 import { PropsWithChildren } from 'react';
+import { screenWidth } from '../helpers/toast-helpers';
+import { CommonToastProps, ToastOptions } from '../Toast';
 import {
   GestureResponderEvent,
   PanResponderGestureState,
   ViewStyle,
+  Animated,
+  PanResponder,
+  I18nManager,
 } from 'react-native';
-import { Animated } from 'react-native';
-import { screenWidth } from '../helpers/toast-helpers';
-import { CommonToastProps, ToastOptions } from '../Toast';
-import { PanResponder } from 'react-native';
+
+const { isRTL } = I18nManager;
 
 const ANIMATION_DIRECTION_RIGHT = 1;
 const ANIMATION_DIRECTION_LEFT = -1;
-let animationDirection = ANIMATION_DIRECTION_RIGHT;
+let animationDirection = isRTL
+  ? ANIMATION_DIRECTION_LEFT
+  : ANIMATION_DIRECTION_RIGHT;
 
 const animateShowing = (animationValue: Animated.Value) =>
   new Promise<void>((resolve) => {
@@ -87,7 +92,7 @@ export const createAnimatedToastConfig = (
   data: CommonToastProps
 ): CommonToastProps => {
   const animationValue = new Animated.ValueXY({
-    x: screenWidth,
+    x: isRTL ? -screenWidth : screenWidth,
     y: 0,
   });
 
