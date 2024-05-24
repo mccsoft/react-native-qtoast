@@ -3,10 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppButton } from './AppButton';
 import { ToastOptions } from '../../../src/Toast';
 
-export const BasicToast = (props: {
-  message: string;
-  options: ToastOptions;
-}) => {
+export const BasicToast = (props: { message: string; options: ToastOptions }) => {
   return (
     <View style={OwnStyles.toast}>
       <Text style={OwnStyles.message}>{props.message}</Text>

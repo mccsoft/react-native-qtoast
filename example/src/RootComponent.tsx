@@ -7,18 +7,12 @@ import { ToastOptions } from '../../src/Toast';
 import { useToast } from '../../src/provider/useToast';
 
 export const RootComponent = () => {
-  const {
-    hide: hideToasts,
-    pause: pauseToasts,
-    unpause: unpauseToasts,
-  } = useToast();
+  const { hide: hideToasts, pause: pauseToasts, unpause: unpauseToasts } = useToast();
   const [index, setIndex] = useState<number>(0);
 
   const showToastOnPress = (message: string, timeout?: number) => {
     showToastFromHelper({
-      renderToast: (options: ToastOptions) => (
-        <BasicToast message={message} options={options} />
-      ),
+      renderToast: (options: ToastOptions) => <BasicToast message={message} options={options} />,
       timeout: timeout,
     });
   };
@@ -28,7 +22,7 @@ export const RootComponent = () => {
       {
         onPress: () => {
           showToastOnPress(`Message toast number ${index}`, 5000);
-          setIndex((x) => x + 1);
+          setIndex(x => x + 1);
         },
         message: 'Show toast',
       },
@@ -57,7 +51,7 @@ export const RootComponent = () => {
   return (
     <>
       <View style={OwnStyles.appContainer}>
-        {buttons.map((button) => (
+        {buttons.map(button => (
           <StyledAppButton {...button} key={button.message} />
         ))}
       </View>

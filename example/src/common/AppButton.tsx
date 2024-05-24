@@ -1,11 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import {
-  Pressable,
-  PressableProps,
-  StyleProp,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 export type ButtonProps = PropsWithChildren<PressableProps> & {
   style?: StyleProp<ViewStyle>;
@@ -14,11 +8,7 @@ export type ButtonProps = PropsWithChildren<PressableProps> & {
 export const AppButton = (props: ButtonProps) => {
   return (
     <Pressable
-      style={(state) => [
-        OwnStyles.pressable,
-        props.style,
-        { opacity: state.pressed ? 0.5 : 1 },
-      ]}
+      style={state => [OwnStyles.pressable, props.style, { opacity: state.pressed ? 0.5 : 1 }]}
       onPress={props.onPress}
     >
       {props.children}

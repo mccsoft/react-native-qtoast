@@ -38,53 +38,40 @@ export const ToastProvider = (props: ToastProviderProps) => {
   const hide = useCallback(async (id?: string) => {
     const toasts = shownToastsRef.current;
     if (id === undefined) {
-      await Promise.all(toasts.map(async (toast) => await toast.onHide?.()));
+      await Promise.all(toasts.map(async toast => await toast.onHide?.()));
     } else {
-      await toasts.find((x) => x.id === id)?.onHide?.();
+      await toasts.find(x => x.id === id)?.onHide?.();
     }
 
-    setQueue((current) =>
-      id === undefined ? [] : current.filter((toast) => toast.id !== id)
-    );
+    setQueue(current => (id === undefined ? [] : current.filter(toast => toast.id !== id)));
   }, []);
 
   const show = useCallback((newToast: CreateToastProps): string => {
-    const animatedToast = newToast.animated
-      ? createAnimatedToastConfig(newToast)
-      : newToast;
+    const animatedToast = newToast.animated ? createAnimatedToastConfig(newToast) : newToast;
 
     const _id = generateUniqueId();
-    setQueue((current) => [...current, { ...animatedToast, id: _id }]);
+    setQueue(current => [...current, { ...animatedToast, id: _id }]);
 
     return _id;
   }, []);
 
   const togglePause = useCallback((id: string | undefined, pause: boolean) => {
-    const pausedToasts = shownToastsRef.current.map((toast) =>
+    const pausedToasts = shownToastsRef.current.map(toast =>
       toast.id !== id && id !== undefined ? toast : { ...toast, paused: pause }
     );
 
     setShownToasts(pausedToasts);
   }, []);
 
-  const pause = useCallback(
-    (id?: string) => togglePause(id, true),
-    [togglePause]
-  );
+  const pause = useCallback((id?: string) => togglePause(id, true), [togglePause]);
 
-  const unpause = useCallback(
-    (id?: string) => togglePause(id, false),
-    [togglePause]
-  );
+  const unpause = useCallback((id?: string) => togglePause(id, false), [togglePause]);
 
   const getSliceFromQueue = useCallback(() => {
-    let q = queue.slice(
-      0,
-      props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS
-    );
+    let q = queue.slice(0, props.amountOfShownToasts ?? DEFAULT_AMOUNT_OF_TOASTS);
 
-    shownToastsRef.current.forEach((toast) => {
-      q = q.map((x) => (x.id === toast.id ? toast : x));
+    shownToastsRef.current.forEach(toast => {
+      q = q.map(x => (x.id === toast.id ? toast : x));
     });
 
     return props.inverted ? q : q.reverse();
@@ -125,7 +112,7 @@ export const ToastProvider = (props: ToastProviderProps) => {
     >
       <View style={outerContainerStyle} pointerEvents="box-none">
         <View style={props.containerStyle} pointerEvents="box-none">
-          {shownToasts.map((toast) => (
+          {shownToasts.map(toast => (
             <Toast key={toast.id} {...toast} />
           ))}
         </View>

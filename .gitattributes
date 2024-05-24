@@ -7,3 +7,9 @@
 *.tsx text eol=lf
 *.jpg binary
 *.png binary
+
+* text=auto eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jpg binary
+*.png binary
