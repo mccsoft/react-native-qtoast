@@ -23,7 +23,7 @@ export type CreateToastProps = CommonToastProps & {
   animated?: boolean;
 };
 
-export const Toast: FC<ToastProps> = (props) => {
+export const Toast: FC<ToastProps> = props => {
   const { hide } = useToast();
   const timeoutEnd = useRef<number | null>(null);
   const remainingTimeout = useRef<typeof props.timeout>(props.timeout);
@@ -49,11 +49,9 @@ export const Toast: FC<ToastProps> = (props) => {
     if (props.timeout == null) return;
 
     timer.current =
-      timer.current ??
-      setTimeout(async () => await onHide(), remainingTimeout.current);
+      timer.current ?? setTimeout(async () => await onHide(), remainingTimeout.current);
 
-    timeoutEnd.current =
-      timeoutEnd.current ?? new Date().getTime() + props.timeout;
+    timeoutEnd.current = timeoutEnd.current ?? new Date().getTime() + props.timeout;
   }, [hide, onHide, props, props.paused]);
 
   return (
