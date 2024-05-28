@@ -127,7 +127,11 @@
           "singleQuote": true,
           "tabWidth": 2,
           "trailingComma": "es5",
-          "useTabs": false
+          "useTabs": false,
+          "printWidth": 100,
+          "htmlWhitespaceSensitivity": "ignore",
+          "bracketSameLine": false,
+          "arrowParens": "avoid"
         }
       ]
     }
@@ -141,7 +145,11 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "es5",
-    "useTabs": false
+    "useTabs": false,
+    "printWidth": 100,
+    "htmlWhitespaceSensitivity": "ignore",
+    "bracketSameLine": false,
+    "arrowParens": "avoid"
   },
   "react-native-builder-bob": {
     "source": "src",

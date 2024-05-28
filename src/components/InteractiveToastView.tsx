@@ -15,12 +15,10 @@ const { isRTL } = I18nManager;
 
 const ANIMATION_DIRECTION_RIGHT = 1;
 const ANIMATION_DIRECTION_LEFT = -1;
-let animationDirection = isRTL
-  ? ANIMATION_DIRECTION_LEFT
-  : ANIMATION_DIRECTION_RIGHT;
+let animationDirection = isRTL ? ANIMATION_DIRECTION_LEFT : ANIMATION_DIRECTION_RIGHT;
 
 const animateShowing = (animationValue: Animated.Value) =>
-  new Promise<void>((resolve) => {
+  new Promise<void>(resolve => {
     Animated.spring(animationValue, {
       toValue: 0 * animationDirection,
       useNativeDriver: true,
@@ -28,7 +26,7 @@ const animateShowing = (animationValue: Animated.Value) =>
   });
 
 const animateHiding = (animationValue: Animated.Value) =>
-  new Promise<void>((resolve) => {
+  new Promise<void>(resolve => {
     Animated.spring(animationValue, {
       toValue: screenWidth * animationDirection,
       useNativeDriver: true,
@@ -42,20 +40,14 @@ export const InteractiveToastView = (
   }>
 ) => {
   const containerStyle: ViewStyle = {
-    transform: [
-      { translateX: props.position.x },
-      { translateY: props.position.y },
-    ],
+    transform: [{ translateX: props.position.x }, { translateY: props.position.y }],
   };
 
   const responderRef = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
-        onPanResponderMove: (
-          event: GestureResponderEvent,
-          gesture: PanResponderGestureState
-        ) => {
+        onPanResponderMove: (event: GestureResponderEvent, gesture: PanResponderGestureState) => {
           Animated.event([null, { dx: props.position.x }], {
             useNativeDriver: false,
           })(event, gesture);
@@ -88,9 +80,7 @@ export const InteractiveToastView = (
   );
 };
 
-export const createAnimatedToastConfig = (
-  data: CommonToastProps
-): CommonToastProps => {
+export const createAnimatedToastConfig = (data: CommonToastProps): CommonToastProps => {
   const animationValue = new Animated.ValueXY({
     x: isRTL ? -screenWidth : screenWidth,
     y: 0,
