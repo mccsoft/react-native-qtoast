@@ -12,6 +12,7 @@ export type CommonToastProps = {
   onHide?: () => Promise<void>;
   onShow?: () => Promise<void>;
   renderToast: (options: ToastOptions) => React.ReactElement;
+  prefixId?: string;
 };
 
 export type ToastProps = CommonToastProps & {
