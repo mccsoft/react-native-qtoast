@@ -49,7 +49,7 @@ export const ToastProvider = (props: ToastProviderProps) => {
   const show = useCallback((newToast: CreateToastProps): string => {
     const animatedToast = newToast.animated ? createAnimatedToastConfig(newToast) : newToast;
 
-    const _id = generateUniqueId();
+    const _id = generateUniqueId(newToast.prefixId);
     setQueue(current => [...current, { ...animatedToast, id: _id }]);
 
     return _id;
