@@ -1,7 +1,6 @@
-import * as React from 'react';
-
 import { RootComponent } from './RootComponent';
 import { ToastProvider } from '../../src/provider/Provider';
+import React from 'react';
 
 export default function App() {
   return (
